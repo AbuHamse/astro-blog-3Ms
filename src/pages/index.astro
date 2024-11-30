@@ -1,16 +1,27 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
 
+const allPosts = await getCollection('blog');
+const recentPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1 class="text-4xl text-red-300">Astro Hello</h1>
-	</body>
-</html>
+<Layout title="Mind Money Machine - Home">
+	<h1 class="text-4xl font-bold mb-8">Welcome to Mind Money Machine</h1>
+	<p class="text-xl mb-8">Explore the intersections of Mental Clarity, Financial Health, and Technological Advancements.</p>
+	
+	<h2 class="text-2xl font-semibold mb-4">Recent Posts</h2>
+	<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+		{recentPosts.map((post) => (
+			<article class="bg-white rounded-lg shadow-md overflow-hidden">
+				<img src={post.data.image} alt={post.data.title} class="w-full h-48 object-cover" />
+				<div class="p-4">
+					<h3 class="text-xl font-semibold mb-2">{post.data.title}</h3>
+					<p class="text-gray-600 mb-4">{post.data.description}</p>
+					<a href={`/blog/${post.slug}`} class="text-blue-600 hover:underline">Read more</a>
+				</div>
+			</article>
+		))}
+	</div>
+</Layout>
+
